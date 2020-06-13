@@ -13,12 +13,20 @@
             "target_name":"<(build_target_name)",
 
             "sources":[
+                "src/FuBeautifyFilter.cpp",
+                "src/FuBeautifyFilter.h",
+                "src/GlobalConfig.cpp",
+                "src/GlobalConfig.h",
+                "src/JsCallBackInfo.h",
                 "src/JSMessageLoop.cpp",
+                "src/JSMessageLoop.h",
+                "src/node_log.cc",
+                "src/node_log.h",
+                "src/VideoFilterProcessBase.cpp",
+                "src/VideoFilterProcessBase.h",
                 "src/ZegoVideoFilter.cpp",
                 "src/ZGExternalVideoFilterFactory.cpp",
-                "src/VideoFilterProcessBase.cpp",
-                "src/FuBeautifyFilter.cpp"
-
+                "src/ZGExternalVideoFilterFactory.h"
             ],
             "include_dirs":[
                 "<!(node -e \"require('nan')\")",

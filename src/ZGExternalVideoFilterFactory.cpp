@@ -9,6 +9,7 @@
 #include "FuBeautifyFilter.h"
 #include "JSMessageLoop.h"
 #include "GlobalConfig.h"
+#include "node_log.h"
 
 namespace ZEGO
 {
@@ -262,8 +263,10 @@ namespace ZEGO
 
             //std::cout << "ZGExternalVideoFilterFactory::BeautifyProcess";
 
+            LOG_INFO("BeautifyProcess InitFilter start");
             if (filter_process_->InitFilter())
             {
+
                 CallToJSFun(GlobalConfigInstance()->init_cb_, 0);
 
                 have_start_ = true;

@@ -12,6 +12,7 @@
 #include "GlobalConfig.h"
 
 #include "funama.h"
+#include "node_log.h"
 
 #ifdef WIN32
 
@@ -76,20 +77,24 @@ namespace ZEGO
 
         bool FuBeautifyFilter::InitFilter()
         {
+            LOG_INFO("FuBeautifyFilter::InitFilter");
             if (!InitOpenGL())
             {
+                LOG_INFO("FuBeautifyFilter::InitFilter InitOpenGL error");
                 inited_ = false;
                 return false;
             }
 
             if (!InitFuSdk())
             {
+                LOG_INFO("FuBeautifyFilter::InitFilter InitFuSdk error");
                 inited_ = false;
                 return false;
             }
 
             if (!LoadFuResource())
             {
+                LOG_INFO("FuBeautifyFilter::InitFilter LoadFuResource error");
                 inited_ = false;
                 return false;
             }
@@ -98,7 +103,7 @@ namespace ZEGO
             UpdateFilterLevel(5);
 
             inited_ = true;
-
+            LOG_INFO("FuBeautifyFilter::InitFilter LoadFuResource ³É¹¦");
             return true;
         }
 

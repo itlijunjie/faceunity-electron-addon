@@ -5,6 +5,7 @@
 #include "ZGExternalVideoFilterFactory.h"
 #include "GlobalConfig.h"
 #include "JsCallBackInfo.h"
+#include "node_log.h"
 
 ZEGO::VIDEO_BEAUTY_FILTER::ZGExternalVideoFilterFactory *FactoryInstance = nullptr;
 
@@ -47,12 +48,13 @@ NAN_METHOD(InitFuBeautyConfig)
 
     ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->v3_bundle_path_ = v3_bundle_path;
     ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->face_beauty_bundle_path_ = face_beautification_bundle_path;
-
+    startLogService((v3_bundle_path + ".log").c_str());
     if (ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->auth_package_data_.size() == 0
         || ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->v3_bundle_path_ == ""
         || ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->face_beauty_bundle_path_ == "")
     {
         info.GetReturnValue().Set(Nan::New(false));
+        LOG_ERROR("InitFuBeautyConfig 参数错误");
     }
     else {
 
@@ -62,7 +64,7 @@ NAN_METHOD(InitFuBeautyConfig)
         }
 
         FactoryInstance->StartBeautyProcess();
-
+        LOG_ERROR("InitFuBeautyConfig 成功");
         info.GetReturnValue().Set(Nan::New(true));
     }
 }
