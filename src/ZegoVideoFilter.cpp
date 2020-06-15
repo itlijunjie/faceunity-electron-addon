@@ -15,6 +15,29 @@ std::string GetNodeStrParam(Nan::NAN_METHOD_ARGS_TYPE info, int index)
     std::string str = std::string(*v8_str);
     return str;
 }
+#ifdef WIN32
+char* UTF8ToUnicode(const char* szUTF8) {
+	int wcscLen = ::MultiByteToWideChar(CP_UTF8, NULL, szUTF8, strlen(szUTF8), NULL, 0);//得到所需空间的大小
+	WCHAR* wszcString = nullptr;
+	wszcString = new WCHAR[wcscLen + 1];//给'\0'分配空间
+	::MultiByteToWideChar(CP_UTF8, NULL, szUTF8, strlen(szUTF8), wszcString, wcscLen);   //转换
+	wszcString[wcscLen] = '\0';
+	char *m_char;
+	int len = WideCharToMultiByte(CP_ACP, 0, wszcString, wcslen(wszcString), NULL, 0, NULL, NULL);
+	m_char = new char[len + 1];
+	WideCharToMultiByte(CP_ACP, 0, wszcString, wcslen(wszcString), m_char, len, NULL, NULL);
+	m_char[len] = '\0';
+	return m_char;
+}
+
+char* UnicodeToUTF8(wchar_t* wszcString) {
+	int utf8Len = ::WideCharToMultiByte(CP_UTF8, NULL, wszcString, wcslen(wszcString), NULL, 0, NULL, NULL);//得到所需空间的大小
+	char* szUTF8 = new char[utf8Len + 1];//给'\0'分配空间
+	::WideCharToMultiByte(CP_UTF8, NULL, wszcString, wcslen(wszcString), szUTF8, utf8Len, NULL, NULL);//转换
+	szUTF8[utf8Len] = '\0';
+	return szUTF8;
+}
+#endif
 
 // 初始化 Fu SDK 配置
 NAN_METHOD(InitFuBeautyConfig)
@@ -41,14 +64,30 @@ NAN_METHOD(InitFuBeautyConfig)
     }
 
     std::string v3_bundle_path = GetNodeStrParam(info, 1);
-    std::string face_beautification_bundle_path = GetNodeStrParam(info, 2);
-
+        std::string face_beautification_bundle_path = GetNodeStrParam(info, 2);
+#ifdef WIN32
+    if (v3_bundle_path != "")
+    {
+        v3_bundle_path = UTF8ToUnicode(v3_bundle_path.c_str());
+    }
+    
+    if (face_beautification_bundle_path != "")
+    {
+        face_beautification_bundle_path = UTF8ToUnicode(face_beautification_bundle_path.c_str());
+    }
+#endif
     ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->init_cb_.js_cb = std::shared_ptr<Nan::Callback>(new Nan::Callback(info[3].As<v8::Function>()));
     ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->init_cb_.iso = info.GetIsolate();
 
     ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->v3_bundle_path_ = v3_bundle_path;
     ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->face_beauty_bundle_path_ = face_beautification_bundle_path;
-    startLogService((v3_bundle_path + ".log").c_str());
+    // startLogService((v3_bundle_path + ".log").c_str());
+    // char *path = "C:\\Users\\ljj\\AppData\\Roaming\\peppa-app-pc-teacher\\zego_fu.log";
+    char *path = "C:\\Users\\杨涛\\AppData\\Roaming\\peppa-app-pc-teacher\\zego_fu.log";
+    
+    startLogService(path);
+    LOG_INFO((v3_bundle_path + ".log").c_str());
+    LOG_INFO(path);
     if (ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->auth_package_data_.size() == 0
         || ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->v3_bundle_path_ == ""
         || ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->face_beauty_bundle_path_ == "")

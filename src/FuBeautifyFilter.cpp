@@ -59,12 +59,14 @@ namespace ZEGO
             std::ifstream fin(filepath, std::ios::binary);
             if (false == fin.good())
             {
+                LOG_INFO("FuBeautifyFilter::LoadBundle  fin.good() = false error");
                 fin.close();
                 return false;
             }
             size_t size = FileSize(fin);
             if (0 == size)
             {
+                LOG_INFO("FuBeautifyFilter::LoadBundle size = 0 error");
                 fin.close();
                 return false;
             }
@@ -84,21 +86,21 @@ namespace ZEGO
                 inited_ = false;
                 return false;
             }
-
+            LOG_INFO("FuBeautifyFilter::InitFilter InitOpenGL success");
             if (!InitFuSdk())
             {
                 LOG_INFO("FuBeautifyFilter::InitFilter InitFuSdk error");
                 inited_ = false;
                 return false;
             }
-
+            LOG_INFO("FuBeautifyFilter::InitFilter InitFuSdk success");
             if (!LoadFuResource())
             {
                 LOG_INFO("FuBeautifyFilter::InitFilter LoadFuResource error");
                 inited_ = false;
                 return false;
             }
-
+            LOG_INFO("FuBeautifyFilter::InitFilter LoadFuResource success");
             // 设置默认美颜等级
             UpdateFilterLevel(5);
 
@@ -290,6 +292,8 @@ namespace ZEGO
 
             if (GlobalConfigInstance()->v3_bundle_path_ == "")
             {
+                //success
+                LOG_INFO("FuBeautifyFilter::InitFuSdk v3_bundle_path_ error");
                 return false;
             }
 
@@ -298,12 +302,14 @@ namespace ZEGO
                 int result_code = fuSetup(reinterpret_cast<float *>(&v3data[0]), v3data.size(), NULL, GlobalConfigInstance()->auth_package_data_.data(), GlobalConfigInstance()->auth_package_data_.size());
                 if (result_code == 0)
                 {
+                    LOG_INFO("FuBeautifyFilter::InitFuSdk LoadBundle fuSetup v3_bundle_path_ error");
                     return false;
                 }
                 return true;
             }
             else
             {
+                LOG_INFO("FuBeautifyFilter::InitFuSdk LoadBundle v3_bundle_path_ error");
                 return false;
             }
         }
